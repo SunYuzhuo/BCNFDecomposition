@@ -37,7 +37,8 @@ public class BCNF {
 		}
 
 		AttributeSet closure = closure(temp, functionalDependencies);
-		if((closure.size() == 0 && temp.size() == 0) || closure.equals(temp) || closure.equals(attributeSet) || closure == attributeSet || closure == temp){
+		closure = intersect(closure, attributeSet);
+		if((closure == null && temp == null) || (closure.size() == 0 && temp.size() == 0) || closure.equals(temp) || closure.equals(attributeSet)){
 			continue;
 		}else{
 			AttributeSet nonClosure = new AttributeSet();
@@ -100,18 +101,8 @@ public class BCNF {
 							add.addAttribute(at);
 						}
 					}
-					for(Iterator<Attribute> it = add.iterator(); it.hasNext();){
-						Attribute at = it.next();
-						if(!newdep.contains(at)){
-							newdep.addAttribute(at);
-						}
-					}
-					for(Iterator<Attribute> it = add.iterator(); it.hasNext();){
-						Attribute at = it.next();
-						if(!update.contains(at)){
-							update.addAttribute(at);
-						}
-					}
+					union(add, newdep);
+					union(add, update);
 				}
 			}
 		}
@@ -119,4 +110,25 @@ public class BCNF {
 	  
     return newdep;
   }
+  
+  private static void union(AttributeSet a, AttributeSet b){
+	for(Iterator<Attribute> it = a.iterator(); it.hasNext();){
+		Attribute at = it.next();
+		if(!b.contains(at)){
+			b.addAttribute(at);
+		}
+	}
+  }
+  
+  private static AttributeSet intersect(AttributeSet a, AttributeSet b){
+	AttributeSet result = new AttributeSet();
+	for(Iterator<Attribute> it = a.iterator(); it.hasNext();){
+		Attribute at = it.next();
+		if(b.contains(at)){
+			result.addAttribute(at);
+		}
+	}
+	return result;
+  }
+  
 }

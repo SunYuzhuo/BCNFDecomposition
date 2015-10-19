@@ -37,8 +37,11 @@ public class AttributeSet {
 		if(other == null || !(other instanceof AttributeSet)){
 			return false;
 		}
-		//TODO: you should probably implement this
-		return this == other;
+		if (((AttributeSet)other).size() != this.size())	return false;
+		for(Iterator<Attribute> it = this.iterator(); it.hasNext();){
+			if(!((AttributeSet)other).contains(it.next())) return false;
+		}
+		return true;
 	}
 
 	public Iterator<Attribute> iterator() {
